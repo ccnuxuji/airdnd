@@ -3,9 +3,8 @@ const authRouter = require('./auth');
 
 router.use('/auth', authRouter);
 
-router.get('/test', function (req, res) {
-  res.cookie('XSRF-TOKEN', req.csrfToken());
-  res.json("Hello World!");
+router.post('/test', function(req, res) {
+  res.json({ requestBody: req.body });
 });
 
 module.exports = router;
