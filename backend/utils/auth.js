@@ -71,4 +71,9 @@ const requireAuth = function (req, _res, next) {
     return next(err);
 }
 
+// If current user has no authorization, return an err
+const requireAuthorization = function (req, _res, next) {
+    
+}
+
 module.exports = { setTokenCookie, restoreUser, requireAuth };
