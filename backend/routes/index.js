@@ -1,10 +1,6 @@
 const router = require('express').Router();
 const apiRouter = require('./api');
 const { requireAuth } = require('../utils/auth')
-// router.get('/hello/world', function (req, res) {
-//     res.cookie('XSRF-TOKEN', req.csrfToken());
-//     res.send('Hello World!');
-// });
 
 // Add a XSRF-TOKEN cookie
 router.get("/api/csrf/restore", (req, res) => {
