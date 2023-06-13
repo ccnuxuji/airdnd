@@ -19,7 +19,6 @@ module.exports = {
     options.tableName = 'SpotImages';
     return queryInterface.bulkInsert(options, [
       {
-        id: 1,
         spotId: 1,
         url: 'to be added',
         preview: true,
