@@ -19,7 +19,8 @@ module.exports = {
     options.tableName = 'Bookings';
     return queryInterface.bulkInsert(options, [
       {
-        userId: 2,
+        spotId: 1,
+        userId: 1,
         startDate: "2021-11-19",
         endDate: "2021-11-20",
         createdAt: "2021-11-19 20:39:36",

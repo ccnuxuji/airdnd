@@ -248,8 +248,8 @@ Returns all the spots.
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /api/spots
   * Body: none
 
 * Successful Response
@@ -288,8 +288,8 @@ Returns all the spots owned (created) by the current user.
 
 * Require Authentication: true
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /api/spots/current
   * Body: none
 
 * Successful Response
@@ -328,8 +328,8 @@ Returns the details of a spot specified by its id.
 
 * Require Authentication: false
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /api/spots/:spotId
   * Body: none
 
 * Successful Response
@@ -393,8 +393,8 @@ Creates and returns a new spot.
 
 * Require Authentication: true
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /api/spots
   * Headers:
     * Content-Type: application/json
   * Body:
