@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Spot, Booking, Review } = require('../db/models');
+const { User, Spot, Booking, Review, ReviewImage, SpotImage } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -75,6 +75,7 @@ const requireAuth = function (req, _res, next) {
 const requireAuthorization = async function (req, _res, next) {
     const currentUser = req.user;
     const sourceName = req.originalUrl.split('/')[2];
+    // console.log(req.originalUrl.split('/'));
     let sourceUserId;
     switch (sourceName) {
         case 'spots':
@@ -91,6 +92,18 @@ const requireAuthorization = async function (req, _res, next) {
         case 'reviews':
             const review = await Review.findByPk(req.params.id);
             sourceUserId = review.userId;
+            break;
+        case 'review-images':
+            const reviewImage = await ReviewImage.findByPk(req.params.id);
+            const reviewId = reviewImage.reviewId;
+            const review2 = await Review.findByPk(reviewId);
+            sourceUserId = review2.userId;
+            break;
+        case 'spot-images':
+            const spotImage = await SpotImage.findByPk(req.params.id);
+            const spotId = spotImage.spotId;
+            const spot2 = await Spot.findByPk(spotId);
+            sourceUserId = spot2.ownerId;
             break;
         default:
             console.log('Source does not match any case');
