@@ -90,7 +90,7 @@ const requireAuthorization = async function (req, _res, next) {
             break;
         case 'reviews':
             const review = await Review.findByPk(req.params.id);
-            sourceUserId = review.ownerId;
+            sourceUserId = review.userId;
             break;
         default:
             console.log('Source does not match any case');

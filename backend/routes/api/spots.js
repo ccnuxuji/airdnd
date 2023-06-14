@@ -1,10 +1,9 @@
 const express = require('express');
-const { User, Spot, Review, SpotImage } = require('../../db/models');
+const { User, Spot, Review, SpotImage, ReviewImage } = require('../../db/models');
 const { requireAuth, requireAuthorization } = require('../../utils/auth')
-const { checkResourceExist } = require('../../utils/errors')
+const { checkResourceExist, checkReviewDuplicate } = require('../../utils/errors')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-
 
 const router = express.Router();
 
@@ -12,6 +11,23 @@ const validateSpot = [
     check('lat')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a valid lat.'),
+    handleValidationErrors
+];
+
+const validateReview = [
+    check('stars')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a valid star.'),
+    check('review')
+        .exists({ checkFalsy: true })
+        .withMessage('Review text is required'),
+    handleValidationErrors
+];
+
+const validateSpotImage = [
+    check('url')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a valid url.'),
     handleValidationErrors
 ];
 
@@ -31,7 +47,7 @@ router.get(
         });
 
         const modifiedSpots = modifySpots(spots);
-        res.json(modifiedSpots);
+        res.json({ Spots: modifiedSpots });
     }
 );
 
@@ -40,13 +56,7 @@ router.get(
     '/current',
     requireAuth,
     async (req, res) => {
-        const { id } = await User.findOne({
-            where: {
-                email: req.user.email
-            }
-        });
-
-        console.log("Current user id is: " + id);
+        const id = req.user.id;
         const spots = await Spot.findAll(
             {
                 where: {
@@ -64,7 +74,7 @@ router.get(
         );
 
         const modifiedSpots = modifySpots(spots);
-        res.json(modifiedSpots);
+        res.json({ Spots: modifiedSpots });
     }
 );
 
@@ -117,6 +127,7 @@ router.post(
     requireAuth,
     checkResourceExist,
     requireAuthorization,
+    validateSpotImage,
     async (req, res) => {
         const spotId = req.params.id;
         const { url, preview } = req.body;
@@ -156,7 +167,53 @@ router.delete(
                 id: req.params.id
             }
         });
-        res.json({"message": "Successfully deleted"});
+        res.json({ "message": "Successfully deleted" });
+    }
+);
+
+// returns all the reviews that belong to a spot specified by id
+router.get(
+    '/:id/reviews',
+    requireAuth,
+    checkResourceExist,
+    async (req, res) => {
+        const id = req.params.id;
+        const reviews = await Review.findAll(
+            {
+                where: {
+                    spotId: id
+                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'firstName', 'lastName']
+                    },
+                    {
+                        model: ReviewImage,
+                        attributes: ['id', 'url']
+                    }
+                ]
+            }
+        );
+
+        res.json({ Reviews: reviews });
+    }
+);
+
+// create and return a new review for a spot specified by id
+router.post(
+    '/:id/reviews',
+    requireAuth,
+    checkResourceExist,
+    checkReviewDuplicate,
+    validateReview,
+    async (req, res) => {
+        const spotId = req.params.id;
+        const userId = req.user.id;
+        const { review, stars } = req.body;
+        const review1 = await Review.create({ userId, spotId, review, stars });
+        res.status(201);
+        res.json(review1);
     }
 );
 
