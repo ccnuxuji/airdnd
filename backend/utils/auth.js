@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
+const { User, Spot, Booking, Review } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -72,8 +72,37 @@ const requireAuth = function (req, _res, next) {
 }
 
 // If current user has no authorization, return an err
-const requireAuthorization = function (req, _res, next) {
-    
+const requireAuthorization = async function (req, _res, next) {
+    const currentUser = req.user;
+    const sourceName = req.originalUrl.split('/')[2];
+    let sourceUserId;
+    switch (sourceName) {
+        case 'spots':
+            const spot = await Spot.findByPk(req.params.id);
+            sourceUserId = spot.ownerId;
+            break;
+        case 'users':
+            sourceUserId = req.params.id;
+            break;
+        case 'bookings':
+            const booking = await Booking.findByPk(req.params.id);
+            sourceUserId = booking.ownerId;
+            break;
+        case 'reviews':
+            const review = await Review.findByPk(req.params.id);
+            sourceUserId = review.ownerId;
+            break;
+        default:
+            console.log('Source does not match any case');
+            break;
+    }
+    if (currentUser.id === sourceUserId) return next();
+
+    const err = new Error('Forbidden');
+    err.title = "Current user don't hvae authorization";
+    err.errors = { message: "Current user don't hvae authorization" };
+    err.status = 403;
+    return next(err);
 }
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+module.exports = { setTokenCookie, restoreUser, requireAuth, requireAuthorization };

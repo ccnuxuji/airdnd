@@ -19,7 +19,6 @@ module.exports = {
     options.tableName = 'ReviewImages';
     return queryInterface.bulkInsert(options, [
       {
-        id: 1,
         reviewId: 1,
         url: 'to be added',
         createdAt: "2021-11-19 20:39:36",
