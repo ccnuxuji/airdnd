@@ -1,4 +1,4 @@
-const { User, Spot } = require('../db/models');
+const { User, Spot, Review, ReviewImage } = require('../db/models');
 
 const checkResourceExist = async function (req, _res, next) {
     const sourceName = req.originalUrl.split('/')[2];
@@ -34,6 +34,42 @@ const checkResourceExist = async function (req, _res, next) {
     return next(err);
 }
 
+//  Review from the current user already exists for the Spot
+const checkReviewDuplicate = async function(req, _res, next) {
+    const userId = req.user.id;
+    const spotId = req.params.id;
+    const review = await Review.findOne({
+        where: {
+            spotId,
+            userId
+        }
+    });
+    if (!review) return next();
+
+    const err = new Error(`User already has a review for this spot`);
+    err.status = 500;
+    err.title = `User already has a review for this spot`;
+    return next(err);
+}
+
+// Cannot add any more images because there is a maximum of 10 images per resource
+const validateReviewImageCounts = async function(req, _res, next) {
+    const reviewImages = await ReviewImage.findAll({
+        where: {
+            reviewId : req.params.id
+        }
+    });
+    const count = reviewImages.length;
+    if (count < 10) return next();
+
+    const err = new Error("Maximum number of images for this resource was reached");
+    err.status = 403;
+    err.title = "Maximum number of images for this resource was reached";
+    return next(err);
+}
+
 module.exports = {
-    checkResourceExist
+    checkResourceExist,
+    checkReviewDuplicate,
+    validateReviewImageCounts
 };
