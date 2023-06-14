@@ -1,13 +1,17 @@
 const express = require('express');
 const { User, Spot, Review, SpotImage } = require('../../db/models');
-const { requireAuth } = require('../../utils/auth')
+const { requireAuth, requireAuthorization } = require('../../utils/auth')
+const { checkResourceExist } = require('../../utils/errors')
 const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
+
 const router = express.Router();
 
 const validateSpot = [
     check('lat')
-    .exists({ checkFalsy: true })
-    .withMessage('Please provide a valid email.'),
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a valid lat.'),
     handleValidationErrors
 ];
 
@@ -66,9 +70,10 @@ router.get(
 
 // get details for a spot from an id
 router.get(
-    '/:spotId',
+    '/:id',
+    checkResourceExist,
     async (req, res, next) => {
-        const spotId = req.params.spotId;
+        const spotId = req.params.id;
         const spot = await Spot.findOne({
             where: {
                 id: spotId
@@ -87,15 +92,6 @@ router.get(
             ]
         });
 
-        // spot not found
-        if (!spot) {
-            const err = new Error("Spot couldn't be found");
-            err.status = 404;
-            err.title = "Spot couldn't be found";
-            err.errors = { Spot: "No such Spot with the given id " + spotId };
-            return next(err);
-        }
-
         const spotDetail = generateSpotDetail(spot);
         res.json(spotDetail);
     }
@@ -104,8 +100,69 @@ router.get(
 // create a spot
 router.post(
     '/',
-
+    requireAuth,
+    validateSpot,
+    async (req, res) => {
+        const ownerId = req.user.id;
+        const { address, city, state, country, lat, lng, name, description, price } = req.body;
+        const spot = await Spot.create({ ownerId, address, city, state, country, lat, lng, name, description, price });
+        res.status(201);
+        res.json(spot);
+    }
 );
+
+// create and return a new image for a spot specified by id
+router.post(
+    '/:id/images',
+    requireAuth,
+    checkResourceExist,
+    requireAuthorization,
+    async (req, res) => {
+        const spotId = req.params.id;
+        const { url, preview } = req.body;
+        const spotImage = await SpotImage.create({ spotId, url, preview });
+        const { id } = spotImage;
+        res.json({ id, url, preview });
+    }
+);
+
+// edit a spot
+router.put(
+    '/:id',
+    requireAuth,
+    checkResourceExist,
+    requireAuthorization,
+    validateSpot,
+    async (req, res) => {
+        const ownerId = req.user.id;
+        const { address, city, state, country, lat, lng, name, description, price } = req.body;
+        const spot = await Spot.findByPk(req.params.id);
+        spot.set({ address, city, state, country, lat, lng, name, description, price });
+        await spot.save();
+
+        res.json(spot);
+    }
+);
+
+// delete a spot
+router.delete(
+    '/:id',
+    requireAuth,
+    checkResourceExist,
+    requireAuthorization,
+    async (req, res) => {
+        await Spot.destroy({
+            where: {
+                id: req.params.id
+            }
+        });
+        res.json({"message": "Successfully deleted"});
+    }
+);
+
+/******************************************************** 
+ * Belows are some useful functions
+*/
 
 function modifySpots(spots) {
     return spots.map(spot => {
