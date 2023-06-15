@@ -1,5 +1,5 @@
 const express = require('express');
-const { User, Spot, Review, ReviewImage } = require('../../db/models');
+const { User, Spot, Review, ReviewImage, SpotImage } = require('../../db/models');
 const { requireAuth, requireAuthorization } = require('../../utils/auth')
 const { checkResourceExist, validateReviewImageCounts } = require('../../utils/errors')
 const { check } = require('express-validator');
@@ -42,7 +42,11 @@ router.get(
                     },
                     {
                         model: Spot,
-                        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price']
+                        include: [
+                            {
+                                model: SpotImage
+                            }
+                        ]
                     },
                     {
                         model: ReviewImage,
@@ -52,7 +56,21 @@ router.get(
             }
         );
 
-        res.json({ Reviews: reviews });
+        let reviewList = [];
+        reviews.forEach(review => {
+            reviewList.push(review.toJSON());
+        });
+
+        reviewList.forEach(review => {
+            review.Spot.previewImage = null;
+            if (review.Spot.SpotImages) {
+                review.Spot.previewImage = review.Spot.SpotImages.reduce((acc, spotImage) => spotImage.preview ? spotImage.url : acc, null) ;
+                delete review.Spot.SpotImages;
+                delete review.Spot.description;
+            }
+        });
+
+        res.json({ Reviews: reviewList });
     }
 );
 

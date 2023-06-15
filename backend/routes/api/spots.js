@@ -1,7 +1,7 @@
 const express = require('express');
-const { User, Spot, Review, SpotImage, ReviewImage } = require('../../db/models');
+const { User, Spot, Review, SpotImage, ReviewImage, Booking } = require('../../db/models');
 const { requireAuth, requireAuthorization } = require('../../utils/auth')
-const { checkResourceExist, checkReviewDuplicate } = require('../../utils/errors')
+const { checkResourceExist, checkReviewDuplicate, currentUserCannotBookHisSpots, checkBookingDate } = require('../../utils/errors')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -11,6 +11,13 @@ const validateSpot = [
     check('lat')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a valid lat.'),
+    handleValidationErrors
+];
+
+const validateBooking = [
+    check('startDate')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a valid startDate.'),
     handleValidationErrors
 ];
 
@@ -46,8 +53,13 @@ router.get(
             ]
         });
 
-        const modifiedSpots = modifySpots(spots);
-        res.json({ Spots: modifiedSpots });
+        let spotList = [];
+        spots.forEach(spot => {
+            spotList.push(spot.toJSON());
+        });
+
+        modifySpots(spotList);
+        res.json({ Spots: spotList });
     }
 );
 
@@ -73,8 +85,13 @@ router.get(
             }
         );
 
-        const modifiedSpots = modifySpots(spots);
-        res.json({ Spots: modifiedSpots });
+        let spotList = [];
+        spots.forEach(spot => {
+            spotList.push(spot.toJSON());
+        });
+
+        modifySpots(spotList);
+        res.json({ Spots: spotList });
     }
 );
 
@@ -84,7 +101,7 @@ router.get(
     checkResourceExist,
     async (req, res, next) => {
         const spotId = req.params.id;
-        const spot = await Spot.findOne({
+        let spot = await Spot.findOne({
             where: {
                 id: spotId
             },
@@ -102,8 +119,10 @@ router.get(
             ]
         });
 
-        const spotDetail = generateSpotDetail(spot);
-        res.json(spotDetail);
+        spot = spot.toJSON();
+
+        generateSpotDetail(spot);
+        res.json(spot);
     }
 );
 
@@ -196,7 +215,12 @@ router.get(
             }
         );
 
-        res.json({ Reviews: reviews });
+        let reviewList = [];
+        reviews.forEach(review => {
+            reviewList.push(review.toJSON());
+        });
+
+        res.json({ Reviews: reviewList });
     }
 );
 
@@ -217,18 +241,77 @@ router.post(
     }
 );
 
+// return all the bookings for a spot specified by id
+router.get(
+    '/:id/bookings',
+    requireAuth,
+    checkResourceExist,
+    async (req, res) => {
+        const { ownerId } = await Spot.findByPk(req.params.id);
+
+        if (req.user.id !== ownerId) {
+            const bookings = await Booking.findAll({
+                where: {
+                    spotId: req.params.id
+                },
+                attributes: ['spotId', 'startDate', 'endDate']
+            });
+            return res.json({ Bookings: bookings });
+        }
+
+        if (req.user.id === ownerId) {
+            const bookings = await Booking.findAll({
+                where: {
+                    spotId: req.params.id
+                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ['id', 'firstName', 'lastName']
+                    }
+                ]
+            });
+            return res.json({ Bookings: bookings });
+        }
+    }
+);
+
+// create and return a new booking from a spot specified by id
+router.post(
+    '/:id/bookings',
+    requireAuth,
+    checkResourceExist,
+    currentUserCannotBookHisSpots,
+    checkBookingDate,
+    validateBooking,
+    async (req, res) => {
+        const spotId = req.params.id;
+        const userId = req.user.id;
+        const { startDate, endDate } = req.body;
+        const booking = await Booking.create({ userId, spotId, startDate, endDate });
+        res.json(booking);
+    }
+);
+
 /******************************************************** 
  * Belows are some useful functions
 */
 
 function modifySpots(spots) {
-    return spots.map(spot => {
+    spots.forEach(spot => {
         const reviews = spot.Reviews;
         const sumRating = reviews.reduce((acc, review) => acc + review.stars, 0);
-        const avgRating = reviews.length === 0 ? null : (sumRating / reviews.length).toFixed(1);
-        const previewImage = 'to be added';
-        const { id, ownerId, address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt } = spot;
-        return { id, ownerId, address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt, avgRating, previewImage };
+        spot.avgRating = reviews.length === 0 ? null : (sumRating / reviews.length);
+        spot.avgRating = Math.round(spot.avgRating * 10) / 10;
+
+        spot.previewImage = null;
+        if (spot.SpotImages) {
+            spot.previewImage = spot.SpotImages.reduce((acc, spotImage) => spotImage.preview ? spotImage.url : acc, null);
+            delete spot.SpotImages;
+        }
+
+        delete spot.Owner;
+        delete spot.Reviews;
     });
 }
 
@@ -236,9 +319,9 @@ function generateSpotDetail(spot) {
     const reviews = spot.Reviews;
     const numReviews = reviews.length;
     const sumRating = reviews.reduce((acc, review) => acc + review.stars, 0);
-    const avgRating = reviews.length === 0 ? null : (sumRating / reviews.length).toFixed(1);
-    const { id, ownerId, address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt, SpotImages, Owner } = spot;
-    return { id, ownerId, address, city, state, country, lat, lng, name, description, price, createdAt, updatedAt, numReviews, avgRating, SpotImages, Owner };
+    spot.avgStarRating = reviews.length === 0 ? null : (sumRating / reviews.length);
+    spot.avgStarRating = Math.round(spot.avgStarRating * 10) / 10;
+    delete spot.Reviews;
 }
 
 module.exports = router;
