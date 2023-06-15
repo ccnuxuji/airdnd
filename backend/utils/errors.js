@@ -1,4 +1,4 @@
-const { User, Spot, Review, ReviewImage } = require('../db/models');
+const { User, Spot, Review, ReviewImage, Booking, SpotImage } = require('../db/models');
 
 const checkResourceExist = async function (req, _res, next) {
     const sourceName = req.originalUrl.split('/')[2];
@@ -19,7 +19,15 @@ const checkResourceExist = async function (req, _res, next) {
             break;
         case 'reviews':
             resource = await Review.findByPk(req.params.id);
-            displayName = 'Review';
+            displayName = 'review';
+            break;
+        case 'review-images':
+            resource = await ReviewImage.findByPk(req.params.id);
+            displayName = 'review-image';
+            break;
+        case 'spot-images':
+            resource = await SpotImage.findByPk(req.params.id);
+            displayName = 'spot-image';
             break;
         default:
             console.log('Source does not match any case');
@@ -35,7 +43,7 @@ const checkResourceExist = async function (req, _res, next) {
 }
 
 //  Review from the current user already exists for the Spot
-const checkReviewDuplicate = async function(req, _res, next) {
+const checkReviewDuplicate = async function (req, _res, next) {
     const userId = req.user.id;
     const spotId = req.params.id;
     const review = await Review.findOne({
@@ -53,10 +61,10 @@ const checkReviewDuplicate = async function(req, _res, next) {
 }
 
 // Cannot add any more images because there is a maximum of 10 images per resource
-const validateReviewImageCounts = async function(req, _res, next) {
+const validateReviewImageCounts = async function (req, _res, next) {
     const reviewImages = await ReviewImage.findAll({
         where: {
-            reviewId : req.params.id
+            reviewId: req.params.id
         }
     });
     const count = reviewImages.length;
