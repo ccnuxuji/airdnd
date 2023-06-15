@@ -983,8 +983,8 @@ Return all the bookings that the current user has made.
 
 * Require Authentication: true
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /api/bookings/current
   * Body: none
 
 * Successful Response
@@ -1028,8 +1028,8 @@ Return all the bookings for a spot specified by id.
 
 * Require Authentication: true
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: GET
+  * URL: /api/spots/:id/bookings
   * Body: none
 
 * Successful Response: If you ARE NOT the owner of the spot.
@@ -1096,8 +1096,8 @@ Create and return a new booking from a spot specified by id.
 * Require Authentication: true
 * Require proper authorization: Spot must NOT belong to the current user
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: POST
+  * URL: /api/post/:id/bookings
   * Body:
 
     ```json

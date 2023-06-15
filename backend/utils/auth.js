@@ -87,7 +87,7 @@ const requireAuthorization = async function (req, _res, next) {
             break;
         case 'bookings':
             const booking = await Booking.findByPk(req.params.id);
-            sourceUserId = booking.ownerId;
+            sourceUserId = booking.userId;
             break;
         case 'reviews':
             const review = await Review.findByPk(req.params.id);

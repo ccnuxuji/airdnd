@@ -33,6 +33,7 @@ const checkResourceExist = async function (req, _res, next) {
             console.log('Source does not match any case');
             break;
     }
+
     if (resource) return next();
 
     const err = new Error(`${displayName} couldn't be found`);
@@ -76,8 +77,29 @@ const validateReviewImageCounts = async function (req, _res, next) {
     return next(err);
 }
 
+const currentUserCannotBookHisSpots = async function (req, _res, next) {
+    const currentUserId = req.user.id;
+    const { ownerId } = await Spot.findByPk(req.params.id);
+    if (currentUserId !== ownerId) return next();
+
+    const err = new Error("user can not book his/her own spot!");
+    err.status = 403;
+    err.title = "user can not book his/her own spot!";
+    return next(err);
+}
+
+const checkBookingDate = function(req, _res, next) {
+    if (req.body.startDate < req.body.endDate) return next();
+    const err = new Error("endDate cannot come before startDate");
+    err.status = 400;
+    err.title = "endDate cannot come before startDate";
+    return next(err);
+}
+
 module.exports = {
     checkResourceExist,
     checkReviewDuplicate,
-    validateReviewImageCounts
+    validateReviewImageCounts,
+    currentUserCannotBookHisSpots,
+    checkBookingDate
 };
