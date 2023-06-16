@@ -40,18 +40,15 @@ router.get(
         // filter for lat, lng, price
         let where = {};
         let lat = {}, lng = {}, price = {};
-        if (maxLat) lat = { [Op.lt]: maxLat };
-        if (minLat) lat = {[Op.gt]:minLat};
-        if (maxLng) lng = {[Op.lt]:maxLng};
-        if (minLng) lng = {[Op.gt]:minLng};
-        if (maxPrice) price = {[Op.lt]:maxPrice};
-        console.log(minPrice)
-        if (minPrice) price = {[Op.gt]:minPrice};
-        console.log(price)
-        if (Object.keys(lat).length !== 0) where.lat = lat;
-        if (Object.keys(lng).length !== 0) where.lng = lng;
-        if (Object.keys(price).length !== 0) where.price = price;
-        console.log(where);
+        if (maxLat) lat[Op.lt] = maxLat;
+        if (minLat) lat[Op.gt] = minLat;
+        if (maxLng) lng[Op.lt] = maxLng;
+        if (minLng) lng[Op.gt] = minLng;
+        if (maxPrice) price[Op.lt] = maxPrice;
+        if (minPrice) price[Op.gt] = minPrice;
+        if (minLat || maxLat) where.lat = lat;
+        if (minLng || maxLng) where.lng = lng;
+        if (maxPrice || minPrice) where.price = price;
 
         const spots = await Spot.findAll({
             where,

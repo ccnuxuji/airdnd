@@ -51,7 +51,7 @@ const validateSpotsQuery = [
   check('minLng')
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage('Minimum longitude  is invalid'),
+    .withMessage('Minimum longitude is invalid'),
   check('maxLng')
     .optional()
     .isFloat({ min: -180, max: 180 })
@@ -89,8 +89,8 @@ const validateSpotsQuery = [
 
 const validateSpot = [
   check('lat')
-    .exists({ checkFalsy: true })
-    .withMessage('Please provide a valid lat.'),
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('longitude is invalid'),
   handleValidationErrors
 ];
 
