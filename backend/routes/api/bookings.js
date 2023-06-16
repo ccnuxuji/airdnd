@@ -1,17 +1,9 @@
 const express = require('express');
 const { Booking, Spot, SpotImage } = require('../../db/models');
 const { requireAuth, requireAuthorization, deteleBookingAuthorization } = require('../../utils/auth')
-const { checkResourceExist, checkBookingDate } = require('../../utils/errors')
+const { checkResourceExist } = require('../../utils/errors')
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
-
-
-const validateBooking = [
-    check('startDate')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid startDate.'),
-    handleValidationErrors
-];
+const { handleValidationErrors, validateBooking } = require('../../utils/validation');
 
 const router = express.Router();
 
@@ -61,7 +53,6 @@ router.put(
     requireAuth,
     checkResourceExist,
     requireAuthorization,
-    checkBookingDate,
     validateBooking,
     async (req, res) => {
         const booking = await Booking.findByPk(req.params.id);

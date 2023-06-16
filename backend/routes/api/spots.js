@@ -8,8 +8,7 @@ const {
 const {
     checkResourceExist,
     checkReviewDuplicate,
-    currentUserCannotBookHisSpots,
-    checkBookingDate
+    currentUserCannotBookHisSpots
 } = require('../../utils/errors')
 const {
     handleValidationErrors,
@@ -297,7 +296,6 @@ router.post(
     requireAuth,
     checkResourceExist,
     currentUserCannotBookHisSpots,
-    checkBookingDate,
     validateBooking,
     async (req, res) => {
         const spotId = req.params.id;

@@ -21,6 +21,26 @@ const handleValidationErrors = (req, _res, next) => {
   next();
 };
 
+const validateSignup = [
+  check('email')
+    .exists({ checkFalsy: true })
+    .isEmail()
+    .withMessage('Please provide a valid email.'),
+  check('username')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 4 })
+    .withMessage('Please provide a username with at least 4 characters.'),
+  check('username')
+    .not()
+    .isEmail()
+    .withMessage('Username cannot be an email.'),
+  check('password')
+    .exists({ checkFalsy: true })
+    .isLength({ min: 6 })
+    .withMessage('Password must be 6 characters or more.'),
+  handleValidationErrors
+];
+
 const validateSpotsQuery = [
   check('page')
     .optional()
@@ -66,13 +86,13 @@ const validateSpotsQuery = [
       }
       return true;
     }),
-    check('minPrice')
+  check('minPrice')
     .optional()
     .isFloat({ min: 0 })
     .withMessage('Minimum price must be greater than or equal to 0'),
   check('maxPrice')
     .optional()
-    .isFloat({ min: 0})
+    .isFloat({ min: 0 })
     .withMessage('Maximum price must be greater than or equal to 0'),
   check()
     .custom((value, { req }) => {
@@ -91,13 +111,38 @@ const validateSpot = [
   check('lat')
     .isFloat({ min: -180, max: 180 })
     .withMessage('longitude is invalid'),
+  check('lng')
+    .isFloat({ min: -180, max: 180 })
+    .withMessage('latitude is invalid'),
+  check('price')
+    .isFloat()
+    .withMessage('price is invalid'),
   handleValidationErrors
 ];
 
 const validateBooking = [
   check('startDate')
     .exists({ checkFalsy: true })
-    .withMessage('Please provide a valid startDate.'),
+    .withMessage('Please provide a valid startDate.')
+    .isDate()
+    .withMessage('startDate must be a date format')
+    .custom(value => {
+      const today = new Date();
+      const bookingStartDate = new Date(value);
+      return bookingStartDate > today
+    })
+    .withMessage('startDate must be after today'),
+  check('endDate')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a valid endDate.')
+    .isDate()
+    .withMessage('endDate must be a date format')
+    .custom((value, { req }) => {
+      const startDate = new Date(req.body.startDate);
+      const endDate = new Date(value);
+      return endDate > startDate;
+    })
+    .withMessage('endDate cannot be on or before startDate'),
   handleValidationErrors
 ];
 
@@ -118,11 +163,20 @@ const validateSpotImage = [
   handleValidationErrors
 ];
 
+const validateReviewImage = [
+  check('url')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a valid url.'),
+  handleValidationErrors
+];
+
 module.exports = {
   handleValidationErrors,
+  validateSignup,
   validateSpotsQuery,
   validateSpot,
   validateBooking,
   validateReview,
-  validateSpotImage
+  validateSpotImage,
+  validateReviewImage
 };
