@@ -88,18 +88,9 @@ const currentUserCannotBookHisSpots = async function (req, _res, next) {
     return next(err);
 }
 
-const checkBookingDate = function(req, _res, next) {
-    if (req.body.startDate < req.body.endDate) return next();
-    const err = new Error("endDate cannot come before startDate");
-    err.status = 400;
-    err.title = "endDate cannot come before startDate";
-    return next(err);
-}
-
 module.exports = {
     checkResourceExist,
     checkReviewDuplicate,
     validateReviewImageCounts,
-    currentUserCannotBookHisSpots,
-    checkBookingDate
+    currentUserCannotBookHisSpots
 };
