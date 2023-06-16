@@ -22,8 +22,16 @@ module.exports = {
         spotId: 1,
         url: 'to be added',
         preview: true,
-        createdAt: "2021-11-19 20:39:36",
-        updatedAt: "2021-11-19 20:39:36"
+      },
+      {
+        spotId: 2,
+        url: 'to be added',
+        preview: true,
+      },
+      {
+        spotId: 3,
+        url: 'to be added',
+        preview: true,
       }
     ], {});
   },

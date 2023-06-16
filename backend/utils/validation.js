@@ -45,62 +45,62 @@ const validateSpotsQuery = [
   check('page')
     .optional()
     .isInt({ min: 1, max: 10 })
-    .withMessage('Page must be greater than or equal to 1'),
+    .withMessage('Page must be greater than or equal to 1.'),
   check('size')
     .optional()
     .isInt({ min: 1, max: 20 })
-    .withMessage('Page must be greater than or equal to 1'),
+    .withMessage('Page must be greater than or equal to 1.'),
   check('minLat')
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage('Minimum latitude is invalid'),
+    .withMessage('Minimum latitude is invalid.'),
   check('maxLat')
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage('Maximum latitude is invalid'),
+    .withMessage('Maximum latitude is invalid.'),
   check()
     .custom((value, { req }) => {
       // Validate if minLat is less than maxLat
       const minLat = parseFloat(req.query.minLat);
       const maxLat = parseFloat(req.query.maxLat);
-      if (minLat >= maxLat) {
-        throw new Error('Minimum latitude should be less than maximum latitude');
+      if (minLat > maxLat) {
+        throw new Error('Minimum latitude should be less than maximum latitude.');
       }
       return true;
     }),
   check('minLng')
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage('Minimum longitude is invalid'),
+    .withMessage('Minimum longitude is invalid.'),
   check('maxLng')
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage('Maximum longitude  is invalid'),
+    .withMessage('Maximum longitude  is invalid.'),
   check()
     .custom((value, { req }) => {
       // Validate if minLng is less than maxLng
       const minLng = parseFloat(req.query.minLng);
       const maxLng = parseFloat(req.query.maxLng);
-      if (minLng >= maxLng) {
-        throw new Error('Minimum longitude should be less than maximum longitude');
+      if (minLng > maxLng) {
+        throw new Error('Minimum longitude should be less than maximum longitude.');
       }
       return true;
     }),
   check('minPrice')
     .optional()
     .isFloat({ min: 0 })
-    .withMessage('Minimum price must be greater than or equal to 0'),
+    .withMessage('Minimum price must be greater than or equal to 0.'),
   check('maxPrice')
     .optional()
     .isFloat({ min: 0 })
-    .withMessage('Maximum price must be greater than or equal to 0'),
+    .withMessage('Maximum price must be greater than or equal to 0.'),
   check()
     .custom((value, { req }) => {
       // Validate if minLat is less than maxLat
       const minPrice = parseFloat(req.query.minPrice);
       const maxPrice = parseFloat(req.query.maxPrice);
-      if (minPrice && maxPrice && minPrice >= maxPrice) {
-        throw new Error('Minimum price should be less than maximum price');
+      if (minPrice && maxPrice && minPrice > maxPrice) {
+        throw new Error('Minimum price should be less than maximum price.');
       }
       return true;
     }),
@@ -108,15 +108,30 @@ const validateSpotsQuery = [
 ];
 
 const validateSpot = [
+  check('address')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide an address.'),
+  check('city')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a city.'),
+  check('state')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a state.'),
+  check('country')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a country.'),
   check('lat')
+    .exists({ checkFalsy: true })
     .isFloat({ min: -180, max: 180 })
-    .withMessage('longitude is invalid'),
+    .withMessage('Longitude is invalid should be in the range [-180, 180].'),
   check('lng')
+    .exists({ checkFalsy: true })
     .isFloat({ min: -180, max: 180 })
-    .withMessage('latitude is invalid'),
+    .withMessage('Latitude is invalid, should be in the range [-180, 180].'),
   check('price')
+    .exists({ checkFalsy: true })
     .isFloat()
-    .withMessage('price is invalid'),
+    .withMessage('Price is invalid.'),
   handleValidationErrors
 ];
 
@@ -125,30 +140,31 @@ const validateBooking = [
     .exists({ checkFalsy: true })
     .withMessage('Please provide a valid startDate.')
     .isDate()
-    .withMessage('startDate must be a date format')
+    .withMessage('StartDate must be a date format.')
     .custom(value => {
       const today = new Date();
       const bookingStartDate = new Date(value);
       return bookingStartDate > today
     })
-    .withMessage('startDate must be after today'),
+    .withMessage('StartDate must be after today.'),
   check('endDate')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a valid endDate.')
     .isDate()
-    .withMessage('endDate must be a date format')
+    .withMessage('EndDate must be a date format.')
     .custom((value, { req }) => {
       const startDate = new Date(req.body.startDate);
       const endDate = new Date(value);
       return endDate > startDate;
     })
-    .withMessage('endDate cannot be on or before startDate'),
+    .withMessage('EndDate cannot be on or before startDate.'),
   handleValidationErrors
 ];
 
 const validateReview = [
   check('stars')
     .exists({ checkFalsy: true })
+    .isInt({ min: 0, max: 5 })
     .withMessage('Please provide a valid star.'),
   check('review')
     .exists({ checkFalsy: true })
@@ -160,6 +176,10 @@ const validateSpotImage = [
   check('url')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a valid url.'),
+  check('preview')
+    .exists({ checkFalsy: true })
+    .isBoolean()
+    .withMessage('Please provide a valid preview.'),
   handleValidationErrors
 ];
 

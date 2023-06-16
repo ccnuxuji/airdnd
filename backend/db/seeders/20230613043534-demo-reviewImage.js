@@ -21,9 +21,15 @@ module.exports = {
       {
         reviewId: 1,
         url: 'to be added',
-        createdAt: "2021-11-19 20:39:36",
-        updatedAt: "2021-11-19 20:39:36"
-      }
+      },
+      {
+        reviewId: 2,
+        url: 'to be added',
+      },
+      {
+        reviewId: 3,
+        url: 'to be added',
+      },
     ], {});
   },
 

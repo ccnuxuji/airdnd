@@ -1,23 +1,18 @@
 const express = require('express');
 const { Op } = require('sequelize');
 const { User, Spot, Review, SpotImage, ReviewImage, Booking } = require('../../db/models');
-const {
-    requireAuth,
-    requireAuthorization
-} = require('../../utils/auth')
+const { requireAuth, requireAuthorization } = require('../../utils/auth')
 const {
     checkResourceExist,
     checkReviewDuplicate,
-    currentUserCannotBookHisSpots
-} = require('../../utils/errors')
+    currentUserCannotBookHisSpots,
+    hasOverlapBookings} = require('../../utils/errors')
 const {
-    handleValidationErrors,
     validateSpotsQuery,
     validateSpot,
     validateBooking,
     validateReview,
-    validateSpotImage
-} = require('../../utils/validation');
+    validateSpotImage} = require('../../utils/validation');
 
 const router = express.Router();
 
@@ -39,12 +34,12 @@ router.get(
         // filter for lat, lng, price
         let where = {};
         let lat = {}, lng = {}, price = {};
-        if (maxLat) lat[Op.lt] = maxLat;
-        if (minLat) lat[Op.gt] = minLat;
-        if (maxLng) lng[Op.lt] = maxLng;
-        if (minLng) lng[Op.gt] = minLng;
-        if (maxPrice) price[Op.lt] = maxPrice;
-        if (minPrice) price[Op.gt] = minPrice;
+        if (maxLat) lat[Op.lte] = maxLat;
+        if (minLat) lat[Op.gte] = minLat;
+        if (maxLng) lng[Op.lte] = maxLng;
+        if (minLng) lng[Op.gte] = minLng;
+        if (maxPrice) price[Op.lte] = maxPrice;
+        if (minPrice) price[Op.gte] = minPrice;
         if (minLat || maxLat) where.lat = lat;
         if (minLng || maxLng) where.lng = lng;
         if (maxPrice || minPrice) where.price = price;
@@ -115,7 +110,7 @@ router.get(
     checkResourceExist,
     async (req, res, next) => {
         const spotId = req.params.id;
-        let spot = await Spot.findOne({
+        let spot = await Spot.unscoped().findOne({
             where: {
                 id: spotId
             },
@@ -180,7 +175,7 @@ router.put(
     async (req, res) => {
         const ownerId = req.user.id;
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
-        const spot = await Spot.findByPk(req.params.id);
+        const spot = await Spot.unscoped().findByPk(req.params.id);
         spot.set({ address, city, state, country, lat, lng, name, description, price });
         await spot.save();
 
@@ -296,6 +291,7 @@ router.post(
     requireAuth,
     checkResourceExist,
     currentUserCannotBookHisSpots,
+    hasOverlapBookings,
     validateBooking,
     async (req, res) => {
         const spotId = req.params.id;
@@ -334,6 +330,7 @@ function generateSpotDetail(spot) {
     const sumRating = reviews.reduce((acc, review) => acc + review.stars, 0);
     spot.avgStarRating = reviews.length === 0 ? null : (sumRating / reviews.length);
     spot.avgStarRating = Math.round(spot.avgStarRating * 10) / 10;
+    spot.numReviews = numReviews;
     delete spot.Reviews;
 }
 

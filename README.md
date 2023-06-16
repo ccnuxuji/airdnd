@@ -636,7 +636,7 @@ Returns all the reviews written by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: 
+  * URL: /api/reviews/current
   * Body: none
 
 * Successful Response
@@ -1175,8 +1175,8 @@ Update and return an existing booking.
 * Require Authentication: true
 * Require proper authorization: Booking must belong to the current user
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: PUT
+  * URL: /api/bookings/:id
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1269,8 +1269,8 @@ Delete an existing booking.
 * Require proper authorization: Booking must belong to the current user or the
   Spot must belong to the current user
 * Request
-  * Method: ?
-  * URL: ?
+  * Method: DELETE
+  * URL: /api/bookings/:id
   * Body: none
 
 * Successful Response
