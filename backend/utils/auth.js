@@ -118,4 +118,19 @@ const requireAuthorization = async function (req, _res, next) {
     return next(err);
 }
 
-module.exports = { setTokenCookie, restoreUser, requireAuth, requireAuthorization };
+
+//  Only the owner of the booking or the owner of the spot is authorized to delete the booking
+const deteleBookingAuthorization = async function (req, _res, next) {
+    const currentUserId = req.user.id;
+    const booking = req.body;
+    const spot = await Spot.findByPk(req.body.spotId);
+    if (currentUserId === booking.userId || currentUserId === spot.ownerId) return next();
+
+    const err = new Error('Forbidden');
+    err.title = "Only the owner of the booking or the owner of the spot is authorized to delete the booking";
+    err.errors = { message: "Only the owner of the booking or the owner of the spot is authorized to delete the booking" };
+    err.status = 403;
+    return next(err);
+}
+
+module.exports = { setTokenCookie, restoreUser, requireAuth, requireAuthorization, deteleBookingAuthorization };

@@ -1,48 +1,61 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const { User, Spot, Review, SpotImage, ReviewImage, Booking } = require('../../db/models');
-const { requireAuth, requireAuthorization } = require('../../utils/auth')
-const { checkResourceExist, checkReviewDuplicate, currentUserCannotBookHisSpots, checkBookingDate } = require('../../utils/errors')
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const {
+    requireAuth,
+    requireAuthorization
+} = require('../../utils/auth')
+const {
+    checkResourceExist,
+    checkReviewDuplicate,
+    currentUserCannotBookHisSpots,
+    checkBookingDate
+} = require('../../utils/errors')
+const {
+    handleValidationErrors,
+    validateSpotsQuery,
+    validateSpot,
+    validateBooking,
+    validateReview,
+    validateSpotImage
+} = require('../../utils/validation');
 
 const router = express.Router();
-
-const validateSpot = [
-    check('lat')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid lat.'),
-    handleValidationErrors
-];
-
-const validateBooking = [
-    check('startDate')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid startDate.'),
-    handleValidationErrors
-];
-
-const validateReview = [
-    check('stars')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid star.'),
-    check('review')
-        .exists({ checkFalsy: true })
-        .withMessage('Review text is required'),
-    handleValidationErrors
-];
-
-const validateSpotImage = [
-    check('url')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid url.'),
-    handleValidationErrors
-];
 
 // get all spots
 router.get(
     '/',
+    validateSpotsQuery,
     async (req, res) => {
+        let { page, size, maxLat, minLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+        // pagination
+        if (!page) page = 1;
+        if (!size) size = 20;
+        let pagination = {
+            limit: size,
+            offset: (page - 1) * size
+        }
+
+        // filter for lat, lng, price
+        let where = {};
+        let lat = {}, lng = {}, price = {};
+        if (maxLat) lat = { [Op.lt]: maxLat };
+        if (minLat) lat = {[Op.gt]:minLat};
+        if (maxLng) lng = {[Op.lt]:maxLng};
+        if (minLng) lng = {[Op.gt]:minLng};
+        if (maxPrice) price = {[Op.lt]:maxPrice};
+        console.log(minPrice)
+        if (minPrice) price = {[Op.gt]:minPrice};
+        console.log(price)
+        if (Object.keys(lat).length !== 0) where.lat = lat;
+        if (Object.keys(lng).length !== 0) where.lng = lng;
+        if (Object.keys(price).length !== 0) where.price = price;
+        console.log(where);
+
         const spots = await Spot.findAll({
+            where,
+            ...pagination,
             include: [
                 { model: SpotImage },
                 {
@@ -59,7 +72,11 @@ router.get(
         });
 
         modifySpots(spotList);
-        res.json({ Spots: spotList });
+        res.json({
+            Spots: spotList,
+            page,
+            size
+        });
     }
 );
 
@@ -67,6 +84,7 @@ router.get(
 router.get(
     '/current',
     requireAuth,
+    validateSpotsQuery,
     async (req, res) => {
         const id = req.user.id;
         const spots = await Spot.findAll(

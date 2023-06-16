@@ -1,6 +1,6 @@
 const express = require('express');
 const { Booking, Spot, SpotImage } = require('../../db/models');
-const { requireAuth, requireAuthorization } = require('../../utils/auth')
+const { requireAuth, requireAuthorization, deteleBookingAuthorization } = require('../../utils/auth')
 const { checkResourceExist, checkBookingDate } = require('../../utils/errors')
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -78,7 +78,7 @@ router.delete(
     '/:id',
     requireAuth,
     checkResourceExist,
-    requireAuthorization,
+    deteleBookingAuthorization,
     async (req, res) => {
         await Booking.destroy({
             where: {
