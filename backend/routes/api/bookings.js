@@ -1,9 +1,10 @@
 const express = require('express');
 const { Booking, Spot, SpotImage } = require('../../db/models');
-const { requireAuth, requireAuthorization, deteleBookingAuthorization } = require('../../utils/auth')
+const { requireAuth,
+    requireAuthorization,
+    deteleBookingAuthorization } = require('../../utils/auth')
 const { checkResourceExist } = require('../../utils/errors')
-const { check } = require('express-validator');
-const { handleValidationErrors, validateBooking } = require('../../utils/validation');
+const { validateBooking } = require('../../utils/validation');
 
 const router = express.Router();
 
@@ -37,7 +38,7 @@ router.get(
         bookingList.forEach(booking => {
             booking.Spot.previewImage = null;
             if (booking.Spot.SpotImages) {
-                booking.Spot.previewImage = booking.Spot.SpotImages.reduce((acc, spotImage) => spotImage.preview ? spotImage.url : acc, null) ;
+                booking.Spot.previewImage = booking.Spot.SpotImages.reduce((acc, spotImage) => spotImage.preview ? spotImage.url : acc, null);
                 delete booking.Spot.SpotImages;
             }
             delete booking.Spot.description;
@@ -80,6 +81,4 @@ router.delete(
     }
 );
 
-
 module.exports = router;
-

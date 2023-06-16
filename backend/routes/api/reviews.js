@@ -2,25 +2,7 @@ const express = require('express');
 const { User, Spot, Review, ReviewImage, SpotImage } = require('../../db/models');
 const { requireAuth, requireAuthorization } = require('../../utils/auth')
 const { checkResourceExist, validateReviewImageCounts } = require('../../utils/errors')
-const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
-
-const validateReviewImage = [
-    check('url')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid url.'),
-    handleValidationErrors
-];
-
-const validateReview = [
-    check('stars')
-        .exists({ checkFalsy: true })
-        .withMessage('Please provide a valid star.'),
-    check('review')
-        .exists({ checkFalsy: true })
-        .withMessage('Review text is required'),
-    handleValidationErrors
-];
+const { validateReview, validateReviewImage } = require('../../utils/validation');
 
 const router = express.Router();
 

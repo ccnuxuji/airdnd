@@ -1,4 +1,6 @@
 const { User, Spot, Review, ReviewImage, Booking, SpotImage } = require('../db/models');
+const { Op } = require('sequelize');
+
 
 const checkResourceExist = async function (req, _res, next) {
     const sourceName = req.originalUrl.split('/')[2];
@@ -88,9 +90,33 @@ const currentUserCannotBookHisSpots = async function (req, _res, next) {
     return next(err);
 }
 
+const hasOverlapBookings = async function (req, _res, next) {
+    const booking = req.body;
+
+    // Check for overlapping bookings
+    const overlappingBooking = await Booking.findOne({
+        where: {
+            startDate: { [Op.lte]: booking.endDate }, // Overlapping condition: start date is less than or equal to new end date
+            endDate: { [Op.gte]: booking.startDate }, // Overlapping condition: end date is greater than or equal to new start date
+        },
+    });
+
+    if (!overlappingBooking) return next();
+
+    const err = new Error("Sorry, this spot is already booked for the specified dates");
+    err.status = 403;
+    err.title = "Sorry, this spot is already booked for the specified dates";
+    err.errors = {
+        startDate: "Start date conflicts with an existing booking",
+        endDate: "End date conflicts with an existing booking"
+    }
+    return next(err);
+}
+
 module.exports = {
     checkResourceExist,
     checkReviewDuplicate,
     validateReviewImageCounts,
-    currentUserCannotBookHisSpots
+    currentUserCannotBookHisSpots,
+    hasOverlapBookings
 };

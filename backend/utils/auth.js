@@ -122,8 +122,8 @@ const requireAuthorization = async function (req, _res, next) {
 //  Only the owner of the booking or the owner of the spot is authorized to delete the booking
 const deteleBookingAuthorization = async function (req, _res, next) {
     const currentUserId = req.user.id;
-    const booking = req.body;
-    const spot = await Spot.findByPk(req.body.spotId);
+    const booking = await Booking.findByPk(req.params.id);
+    const spot = await Spot.findByPk(booking.spotId);
     if (currentUserId === booking.userId || currentUserId === spot.ownerId) return next();
 
     const err = new Error('Forbidden');
