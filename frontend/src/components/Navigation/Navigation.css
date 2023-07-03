@@ -1,3 +1,30 @@
 .hidden {
     display: none;
 }
+
+.nav-bar-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 5%;
+    padding-right: 5%;
+    height: 80px;
+}
+
+.logo-img {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    width: 50%;
+}
+
+.logo-text {
+    display: inline-block;
+    width: 50%;
+}
+
+.nav-bar-logo {
+    display: flex;
+    align-items: center;
+}
+
