@@ -11,12 +11,10 @@ function Navigation({ isLoaded }) {
     return (
         <div className='nav-bar-wrapper'>
             {/* logo */}
-            <div className='nav-bar-logo'>   
-                <NavLink exact to="/">
-                    <img className='logo-img' alt='logo' src={logoImg} />
-                    <div className='logo-text'>airdnd</div>
-                </NavLink>
-            </div>
+            <NavLink className='nav-bar-logo' exact to="/">
+                <img className='logo-img' alt='logo' src={logoImg} />
+                <div className='logo-text'>airdnd</div>
+            </NavLink>
 
             {/* search bar */}
             <div className='search-bar'>

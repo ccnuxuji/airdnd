@@ -9,22 +9,26 @@
     padding-left: 5%;
     padding-right: 5%;
     height: 80px;
+    border-bottom: 1px solid black;
 }
 
 .logo-img {
-    width: 100%;
-    height: auto;
+    height: 40px;
     display: inline-block;
-    width: 50%;
+    width: 30%;
 }
 
 .logo-text {
     display: inline-block;
-    width: 50%;
+    width: 70%;
+    color: pink;
+    font-size: x-large;
 }
 
 .nav-bar-logo {
+    width: 133pt;
     display: flex;
     align-items: center;
-}
+    text-decoration: none;
 
+}
