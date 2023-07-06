@@ -4,6 +4,7 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import { Link } from "react-router-dom";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -41,16 +42,22 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button onClick={openMenu} style={{ color: "black", fontSize: "20px" }}>
-        <i className="fa-solid fa-bars"></i>
-        <i className="fas fa-user-circle" />
-      </button>
-      <ul className={ulClassName} ref={ulRef}>
+      <div className="nav-profile-createSpot">
+        {user &&
+          <Link to='/spots/new'  className="create-spot-text">Create a New Spot</Link>
+        }
+        <button onClick={openMenu} style={{ color: "black", fontSize: "20px" }}>
+          <i className="fa-solid fa-bars"></i>
+          <i className="fas fa-user-circle" />
+        </button>
+      </div>
+
+      <div className={ulClassName} ref={ulRef}>
         {user ? (
           <>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
+            <li>Hello, {user.firstName}</li>
             <li>{user.email}</li>
+            <Link  to='/spots/current'>Manage Spot</Link>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>
@@ -69,7 +76,7 @@ function ProfileButton({ user }) {
             />
           </>
         )}
-      </ul>
+      </div>
     </>
   );
 }

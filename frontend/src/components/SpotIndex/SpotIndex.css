@@ -1,0 +1,26 @@
+
+
+.spot-index-all {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+/* Media queries to adjust the number of columns */
+@media (min-width: 680px) {
+    .spot-index-all {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 1020px) {
+    .spot-index-all {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+@media (min-width: 1360px) {
+    .spot-index-all {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+}
