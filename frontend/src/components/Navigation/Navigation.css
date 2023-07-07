@@ -10,6 +10,7 @@
     padding-right: 5%;
     height: 80px;
     border-bottom: 1px solid black;
+    margin-bottom: 20px;
 }
 
 .logo-img {
@@ -31,7 +32,6 @@
     align-items: center;
     text-decoration: none;
 }
-
 
 .profile-dropdown {
     position: absolute;
@@ -60,4 +60,13 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
+}
+
+.nav-profile-createSpot {
+    display: flex;
+    align-items: center;
+}
+
+.create-spot-text {
+    margin-right: 10px;
 }

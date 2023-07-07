@@ -26,31 +26,36 @@ function LoginFormModal() {
 
     return (
         <>
-            <h1>Log In</h1>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Username or Email
-                    <input
-                        type="text"
-                        value={credential}
-                        onChange={(e) => setCredential(e.target.value)}
-                        required
-                    />
-                </label>
-                <label>
-                    Password
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </label>
-                {errors.credential && (
-                    <p>{errors.credential}</p>
-                )}
-                <button type="submit">Log In</button>
-            </form>
+            <div className="login-modal">
+                <div className="login-header">Log In</div>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <input
+                            type="text"
+                            value={credential}
+                            onChange={(e) => setCredential(e.target.value)}
+                            placeholder="Email or Username"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+                    {errors.credential && (
+                        <p>{errors.credential}</p>
+                    )}
+                    <div>
+                        <button type="submit">Log In</button>
+                    </div>
+
+                </form>
+            </div>
         </>
     );
 }

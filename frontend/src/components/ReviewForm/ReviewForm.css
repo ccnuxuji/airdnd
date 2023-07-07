@@ -1,0 +1,33 @@
+.edit-review-modal {
+    height: 300px;
+    width: 568px;
+}
+
+.edit-review-header {
+    display: block;
+}
+
+.star-rating {
+    direction: rtl;
+    /* Right-to-left to display stars from right to left */
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+    /* Hide the radio buttons */
+}
+
+.star-rating label {
+    font-size: 24px;
+    /* Adjust the size of the stars */
+    display: inline-block;
+    cursor: pointer;
+    color: #ddd;
+    /* Default star color */
+}
+
+.star-rating label:hover,
+.star-rating input[type="radio"]:checked~label {
+    color: #ffc107;
+    /* Highlighted star color */
+}

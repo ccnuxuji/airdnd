@@ -11,7 +11,7 @@ function Navigation({ isLoaded }) {
     return (
         <div className='nav-bar-wrapper'>
             {/* logo */}
-            <NavLink className='nav-bar-logo' exact to="/">
+            <NavLink className='nav-bar-logo' to="/">
                 <img className='logo-img' alt='logo' src={logoImg} />
                 <div className='logo-text'>airdnd</div>
             </NavLink>
@@ -22,6 +22,7 @@ function Navigation({ isLoaded }) {
             </div>
 
             {/* profile button */}
+            
             {isLoaded && (
                 <ProfileButton user={sessionUser} />
             )}

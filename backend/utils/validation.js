@@ -176,10 +176,6 @@ const validateSpotImage = [
   check('url')
     .exists({ checkFalsy: true })
     .withMessage('Please provide a valid url.'),
-  check('preview')
-    .exists({ checkFalsy: true })
-    .isBoolean()
-    .withMessage('Please provide a valid preview.'),
   handleValidationErrors
 ];
 

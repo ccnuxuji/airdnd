@@ -1,4 +1,5 @@
 import { csrfFetch } from "./csrf";
+import {fetchCurrentSpots} from './spots'
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -28,7 +29,11 @@ export const login = (user) => async (dispatch) => {
         }),
     });
     const data = await response.json();
-    dispatch(setUser(data.user));
+    if (response.ok) {
+        dispatch(setUser(data.user));
+        dispatch(fetchCurrentSpots());
+    }
+    
     return response;
 };
 
@@ -63,6 +68,8 @@ export const logout = () => async (dispatch) => {
     dispatch(removeUser());
     return response;
 };
+/*******************************selectors**************************** */
+export const getCurrentUser = (state) => state.session.user;
 
 /******************************reducers***************************** */
 const initialState = { user: null };

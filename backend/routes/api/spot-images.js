@@ -5,7 +5,7 @@ const { checkResourceExist } = require('../../utils/errors')
 
 const router = express.Router();
 
-// delete an existing image for a spot
+// delete an existing image by image id
 router.delete(
     '/:id',
     requireAuth,

@@ -1,0 +1,22 @@
+.spot-detail-wrapper-outter {
+    display: flex;
+    justify-content: center;
+}
+
+.spot-detail-wrapper {
+    max-width: 1600px;
+
+}
+
+/* .spot-detail-imgWrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "spot-detail-imgMain spot-detail-img1 spot-detail-img2"
+        "spot-detail-imgMain spot-detail-img3 spot-detail-img4";
+} */
+
+.spot-booking-area {
+    border: 1px solid black;
+}

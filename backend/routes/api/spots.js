@@ -158,6 +158,7 @@ router.post(
     validateSpotImage,
     async (req, res) => {
         const spotId = req.params.id;
+        const images = req.body;
         const { url, preview } = req.body;
         const spotImage = await SpotImage.create({ spotId, url, preview });
         const { id } = spotImage;
@@ -212,6 +213,10 @@ router.get(
                     spotId: id
                 },
                 include: [
+                    {
+                        model: Spot,
+                        attributes: ['id', 'name']
+                    },
                     {
                         model: User,
                         attributes: ['id', 'firstName', 'lastName']
