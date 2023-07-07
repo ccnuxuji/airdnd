@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { createOneSpot, updateOneSpot } from '../../store/spots'
 import './SpotForm.css';
 
@@ -26,7 +26,7 @@ const SpotForm = ({ spot, formType }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const images = [
-            {   
+            {
                 ...spot.SpotImages[0],
                 url: photoUrl,
                 preview: true
@@ -58,19 +58,51 @@ const SpotForm = ({ spot, formType }) => {
                 const { id } = await dispatch(createOneSpot(spot, images));
                 history.push(`/spots/${id}`)
             } else {
-                console.log(spot)
-                const { id } = await dispatch(updateOneSpot(spot, images));
+                const imagesForUpdate = [];
+                if (photoUrl !== spot.SpotImages[0].url) imagesForUpdate.push({ ...spot.SpotImages[0], url: photoUrl, preview: true });
+                if (photoUrl2 !== spot.SpotImages[1].url) imagesForUpdate.push({ ...spot.SpotImages[1], url: photoUrl2, preview: false });
+                if (photoUrl3 !== spot.SpotImages[2].url) imagesForUpdate.push({ ...spot.SpotImages[2], url: photoUrl3, preview: false });
+                if (photoUrl4 !== spot.SpotImages[3].url) imagesForUpdate.push({ ...spot.SpotImages[3], url: photoUrl4, preview: false });
+                if (photoUrl5 !== spot.SpotImages[4].url) imagesForUpdate.push({ ...spot.SpotImages[4], url: photoUrl5, preview: false });
+                const { id } = await dispatch(updateOneSpot(spot, imagesForUpdate));
                 history.push(`/spots/${id}`)
             }
         } catch (error) {
+            console.log(error);
             setErrors({ ...error.errors });
         }
 
     };
 
     useEffect(() => {
+        const errorsObject = {};
+        if (country.length === 0) {
+            errorsObject.country = "Country field is required";
+        }
+        if (address.length === 0) {
+            errorsObject.address = "Address field is required";
+        }
+        if (city.length === 0) {
+            errorsObject.city = "City field is required";
+        }
+        if (lat.length === 0) {
+            errorsObject.lat = "Latitude field is required";
+        }
+        if (lng.length === 0) {
+            errorsObject.lng = "Longitude field is required";
+        }
+        if (price.length === 0) {
+            errorsObject.price = "Price field is required";
+        }
+        if (state.length === 0) {
+            errorsObject.state = "State field is required";
+        }
+        if (name.length === 0) {
+            errorsObject.name = "Title field is required";
+        }
+        setErrors(errorsObject);
 
-    }, [country, address, city, state, lat, lng, description, price]);
+    }, [country, address, city, state, lat, lng, description, name, price]);
 
     return (
         <div className='spot-form-page'>
@@ -156,6 +188,7 @@ const SpotForm = ({ spot, formType }) => {
                 <div className=''>
                     <h1>Create a title for your spot</h1>
                     <div>Catch guest's attention with a spot title that highlights what makes your place special.</div>
+                    <div className="errors">{errors.name}</div>
                     <input
                         type='text'
                         value={name}
@@ -168,6 +201,7 @@ const SpotForm = ({ spot, formType }) => {
                     <h1>Set a base price for your spot</h1>
                     <div>Competitive pricing can help your listing stand out and rank higher in the search results.</div>
                     <label htmlFor='spot-form-price-input'>$</label>
+                    <div className="errors">{errors.price}</div>
                     <input
                         id='spot-form-price-input'
                         value={price}

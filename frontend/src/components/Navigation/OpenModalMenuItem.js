@@ -2,6 +2,7 @@ import React from 'react';
 import { useModal } from '../../context/Modal';
 
 function OpenModalMenuItem({
+    itemType,
     modalComponent, // component to render inside the modal
     itemText, // text of the menu item that opens the modal
     onItemClick, // optional: callback function that will be called once the menu item that opens the modal is clicked
@@ -16,7 +17,10 @@ function OpenModalMenuItem({
     };
 
     return (
-        <li onClick={onClick}>{itemText}</li>
+        <>
+            {itemType === 'list' && (<li onClick={onClick}>{itemText}</li>)}
+            {itemType === 'button' && (<button onClick={onClick}>{itemText}</button>)}
+        </>
     );
 }
 

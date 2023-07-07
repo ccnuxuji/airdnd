@@ -1,9 +1,16 @@
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { deleteOneSpot } from '../../store/spots';
+import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
+import DeleteConfirmModal from '../DeleteConfirmModal';
+import { useModal } from "../../context/Modal";
+
+
+
 import './SpotIndexItem.css';
 
 const SpotIndexItem = ({ spot, fromPath }) => {
+  const { closeModal } = useModal();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -13,8 +20,9 @@ const SpotIndexItem = ({ spot, fromPath }) => {
   }
 
   const handleDelete = (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     dispatch(deleteOneSpot(spot.id));
+    closeModal();
     history.push(`/spots/current`)
   }
 
@@ -22,7 +30,7 @@ const SpotIndexItem = ({ spot, fromPath }) => {
     <div className="spot-index-item">
       <Link to={`/spots/${spot.id}`}>
         <div className='spotItem-img'>
-          <img alt='house image' src={`${spot.previewImage}`} />
+          <img alt='house' src={`${spot.previewImage}`} />
         </div>
         <div className='spotItem-name'>{`${spot.name}`}</div>
         <div className='spotItem-address'>{`${spot.address}`}</div>
@@ -35,9 +43,12 @@ const SpotIndexItem = ({ spot, fromPath }) => {
             <button
               onClick={handleUpdate}
             >Update</button>
-            <button
-            onClick={handleDelete}
-            >Delete</button>
+            <OpenModalMenuItem
+              itemType='button'
+              itemText="Delete"
+              // onItemClick={closeMenu}
+              modalComponent={<DeleteConfirmModal spot={spot} handleDelete={handleDelete} type='spot' />}
+            />
           </div>
 
         )

@@ -214,6 +214,10 @@ router.get(
                 },
                 include: [
                     {
+                        model: Spot,
+                        attributes: ['id', 'name']
+                    },
+                    {
                         model: User,
                         attributes: ['id', 'firstName', 'lastName']
                     },

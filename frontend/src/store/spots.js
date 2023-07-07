@@ -4,6 +4,7 @@ export const LOAD_CURRENT_SPOTS = 'load/current/SPOTS';
 export const RECEIVE_SPOT = 'spots/RECEIVE_SPOT';
 export const UPDATE_SPOT = 'spots/UPDATE_SPOT';
 export const REMOVE_SPOT = 'spots/REMOVE_SPOT';
+export const REMOVE_CURRENT_SPOTS = 'remove/current/SPOTS'
 
 
 /******actions******************** */
@@ -30,6 +31,10 @@ export const editSpot = (spot) => ({
 export const removeSpot = (spotId) => ({
     type: REMOVE_SPOT,
     spotId,
+});
+
+export const removeCurrentSpots = () => ({
+    type: REMOVE_CURRENT_SPOTS,
 });
 
 /******thunks******************** */
@@ -83,9 +88,9 @@ export const createOneSpot = (spot, images) => async dispatch => {
     );
     const data = await res.json();
     if (res.status === 201) {
-        images.fotEach(async image => {
+        const imageUploadPromises = images.map(async image => {
             if (image.url !== '') {
-                await csrfFetch(
+                return csrfFetch(
                     `/api/spots/${data.id}/images`,
                     {
                         method: 'POST',
@@ -96,8 +101,9 @@ export const createOneSpot = (spot, images) => async dispatch => {
                     }
                 );
             }
+            return Promise.resolve(); // Skip if the image URL is empty
         });
-
+        await Promise.all(imageUploadPromises);
         dispatch(receiveSpot(data))
         return data;
     } else {
@@ -120,13 +126,11 @@ export const updateOneSpot = (spot, images) => async dispatch => {
     const data = await res.json();
 
     if (res.status === 200) {
+        const imageUploadPromises = [];
         images.forEach(async image => {
-            if (image.id && image.url === '') {
-                // need to delete this image
-                await csrfFetch(`/api/spot-images/${image.id}`, { method: 'DELETE' });
-            } else if (!image.id && image.url !== '') {
+            if (image.url !== '') {
                 // need to add a new image
-                await csrfFetch(
+                const curr = csrfFetch(
                     `/api/spots/${data.id}/images`,
                     {
                         method: 'POST',
@@ -136,23 +140,15 @@ export const updateOneSpot = (spot, images) => async dispatch => {
                         body: JSON.stringify(image)
                     }
                 );
-            } else if (image.id && image.url !== '') {
-                // need to update this image(delete first and then add new image)
-                await csrfFetch(`/api/spot-images/${image.id}`, { method: 'DELETE' });
-                await csrfFetch(
-                    `/api/spots/${data.id}/images`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(image)
-                    }
-                );
+                imageUploadPromises.push(curr)
             }
-            
+            if (image.id) {
+                // need to delete this image
+                imageUploadPromises.push(csrfFetch(`/api/spot-images/${image.id}`, { method: 'DELETE' }));
+            }
         });
-        dispatch(receiveSpot({...spot, SpotImages: images}));
+        await Promise.all(imageUploadPromises);
+        dispatch(receiveSpot({ ...spot, SpotImages: images }));
         return data;
     } else {
         throw data;
@@ -199,12 +195,16 @@ const spotsReducer = (state = initialState, action) => {
         case RECEIVE_SPOT:
             return { ...state, singleSpot: action.spot };
         case UPDATE_SPOT:
-            return { ...state, [action.spot.id]: action.spot };
+            return { ...state, singleSpot: action.spot };
         case REMOVE_SPOT:
             const newState = { ...state };
             delete newState.allSpots[action.spotId];
             delete newState.currentSpots[action.spotId];
             return newState;
+        case REMOVE_CURRENT_SPOTS:
+            const newState1 = { ...state };
+            newState1.currentSpots = {};
+            return newState1;
         default:
             return state;
     }

@@ -69,6 +69,7 @@ export const logout = () => async (dispatch) => {
     return response;
 };
 /*******************************selectors**************************** */
+export const getCurrentUser = (state) => state.session.user;
 
 /******************************reducers***************************** */
 const initialState = { user: null };

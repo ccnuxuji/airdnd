@@ -1,7 +1,8 @@
-import {useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import SpotIndexItem from '../SpotIndexItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchSpots, getSpots, fetchCurrentSpots, getCurrentSpots } from '../../store/spots';
+import { getCurrentUser } from '../../store/session';
 import { useEffect } from 'react';
 import './SpotIndex.css';
 
@@ -10,6 +11,7 @@ const SpotIndex = () => {
   const path = window.location.pathname;
   const spots = useSelector(getSpots);
   const currentSpots = useSelector(getCurrentSpots);
+  const user = useSelector(getCurrentUser);
   const dispatch = useDispatch();
 
   const createNewSpotHandler = (e) => {
@@ -18,11 +20,14 @@ const SpotIndex = () => {
   }
 
   useEffect(() => {
-    if (path === "/spots/current") {
-      dispatch(fetchCurrentSpots());
-    }
-    dispatch(fetchSpots())
+    dispatch(fetchSpots());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+       dispatch(fetchCurrentSpots());
+    }
+  }, [dispatch, user]);
 
   return (
     <div>
