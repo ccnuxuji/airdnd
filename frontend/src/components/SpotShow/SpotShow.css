@@ -4,18 +4,44 @@
 }
 
 .spot-detail-wrapper {
-    max-width: 1600px;
-
+    max-width: 1200px;
 }
 
-/* .spot-detail-imgWrapper {
+.spot-detail-imgWrapper {
+    width: 100%;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 300px 300px;
     grid-template-areas:
-        "spot-detail-imgMain spot-detail-img1 spot-detail-img2"
-        "spot-detail-imgMain spot-detail-img3 spot-detail-img4";
-} */
+        "mainImg img1 img2"
+        "mainImg img3 img4";
+    gap: 10px;
+}
+
+.spot-detail-imgMain {
+    grid-area: mainImg;
+}
+
+.spot-detail-img1 {
+    grid-area: img1;
+}
+
+.spot-detail-img2 {
+    grid-area: img2;
+}
+
+.spot-detail-img3 {
+    grid-area: img3;
+}
+
+.spot-detail-img4 {
+    grid-area: img4;
+}
+
+.spot-detail-imgWrapper img {
+    max-width: 100%;
+    height: 100%;
+}
 
 .spot-booking-area {
     border: 1px solid black;
