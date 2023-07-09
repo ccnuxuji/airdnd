@@ -104,7 +104,8 @@ export const createOneSpot = (spot, images) => async dispatch => {
             return Promise.resolve(); // Skip if the image URL is empty
         });
         await Promise.all(imageUploadPromises);
-        dispatch(receiveSpot(data))
+        await dispatch(receiveSpot(data))
+        await dispatch(fetchSpots())
         return data;
     } else {
         throw data;

@@ -4,8 +4,9 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useModal } from "../../context/Modal";
 import { createOneReview, updateOneReview } from '../../store/reviews'
+import { fetchOneSpot } from '../../store/spots';
 
-function ReviewForm({ review, formType }) {
+function ReviewForm({ review, spotId, formType }) {
     const dispatch = useDispatch();
     const history = useHistory();
     const [reviewContent, setReviewContent] = useState(review.review);
@@ -21,17 +22,17 @@ function ReviewForm({ review, formType }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        review = { ...review, stars: rating, review: reviewContent};
+        review = { ...review, stars: rating, review: reviewContent };
         try {
             if (formType === "Create") {
-                await dispatch(createOneReview(review));
-            } else { 
+                await dispatch(createOneReview(spotId, review));
+            } else {
                 // the other case is "Update"
-                console.log('we are in the before the update')
                 await dispatch(updateOneReview(review));
             }
+            console.log(spotId)
             closeModal();
-            // history.push(`/reviews/current`);
+
         } catch (error) {
             setErrors({ ...error.errors });
         }
@@ -40,79 +41,91 @@ function ReviewForm({ review, formType }) {
 
     useEffect(() => {
         const errorsObject = {};
-        if (reviewContent.length === 0) {
-            errorsObject.country = "Review field is required";
+        if (reviewContent.length < 10) {
+            errorsObject.review = "Review field is required";
+        }
+        if (rating < 1) {
+            errorsObject.rating = 'star rating is required'
         }
         setErrors(errorsObject);
 
-    }, [reviewContent]);
+    }, [reviewContent, rating]);
 
     return (
         <>
             <div className="edit-review-modal">
-                <div className="edit-review-header">How was your stay at {`${review.Spot.name}`}?</div>
+                <div className="edit-review-header">How was your stay {formType === 'Update' ? `at ${review.Spot.name}` : ''}?</div>
                 <form onSubmit={handleSubmit}>
                     <div>
                         <textarea
                             type="text"
                             value={reviewContent}
                             onChange={(e) => setReviewContent(e.target.value)}
-                            placeholder="review content here"
+                            placeholder="leave your review here..."
                             required
                         />
                     </div>
-                    <div className="star-rating">
-                        <input
-                            type="radio"
-                            id="star5"
-                            name="rating"
-                            value="5"
-                            checked={rating === 5}
-                            onChange={handleRatingChange}
-                        />
-                        <label htmlFor="star5">&#9733;</label>
-                        <input
-                            type="radio"
-                            id="star4"
-                            name="rating"
-                            value="4"
-                            checked={rating === 4}
-                            onChange={handleRatingChange}
-                        />
-                        <label htmlFor="star4">&#9733;</label>
-                        <input
-                            type="radio"
-                            id="star3"
-                            name="rating"
-                            value="3"
-                            checked={rating === 3}
-                            onChange={handleRatingChange}
-                        />
-                        <label htmlFor="star3">&#9733;</label>
-                        <input
-                            type="radio"
-                            id="star2"
-                            name="rating"
-                            value="2"
-                            checked={rating === 2}
-                            onChange={handleRatingChange}
-                        />
-                        <label htmlFor="star2">&#9733;</label>
-                        <input
-                            type="radio"
-                            id="star1"
-                            name="rating"
-                            value="1"
-                            checked={rating === 1}
-                            onChange={handleRatingChange}
-                        />
-                        <label htmlFor="star1">&#9733;</label>
+                    <div className='star-rating-wrapper'>
+                        <div className="star-rating">
+                            <div className='star-text'>
+                                <div>stars</div>
+                            </div>
+                            <input
+                                type="radio"
+                                id="star5"
+                                name="rating"
+                                value="5"
+                                checked={rating === 5}
+                                onChange={handleRatingChange}
+                            />
+                            <label htmlFor="star5">&#9733;</label>
+                            <input
+                                type="radio"
+                                id="star4"
+                                name="rating"
+                                value="4"
+                                checked={rating === 4}
+                                onChange={handleRatingChange}
+                            />
+                            <label htmlFor="star4">&#9733;</label>
+                            <input
+                                type="radio"
+                                id="star3"
+                                name="rating"
+                                value="3"
+                                checked={rating === 3}
+                                onChange={handleRatingChange}
+                            />
+                            <label htmlFor="star3">&#9733;</label>
+                            <input
+                                type="radio"
+                                id="star2"
+                                name="rating"
+                                value="2"
+                                checked={rating === 2}
+                                onChange={handleRatingChange}
+                            />
+                            <label htmlFor="star2">&#9733;</label>
+                            <input
+                                type="radio"
+                                id="star1"
+                                name="rating"
+                                value="1"
+                                checked={rating === 1}
+                                onChange={handleRatingChange}
+                            />
+                            <label htmlFor="star1">&#9733;</label>
+
+                        </div>
                     </div>
+
                     {errors.credential && (
                         <p>{errors.credential}</p>
                     )}
                     <div>
-                        <button type="submit">{formType} your review</button>
+                        <button 
+                        disabled={Object.keys(errors).length !== 0}
+                        type="submit">Submit Your Review</button>
                     </div>
                 </form>
             </div>

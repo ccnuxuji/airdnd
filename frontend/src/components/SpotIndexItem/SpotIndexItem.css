@@ -1,18 +1,93 @@
-
 .spot-index-item {
     display: flex;
     flex-direction: column;
     place-self: center;
     width: 340px;
-    height: 400px;
+    height: 340px;
     padding-left: 1%;
     padding-right: 1%;
+    border-radius: 10px;
 }
 
 .spot-index-item img {
     max-width: 100%;
     min-width: 90%;
-    max-height: 70%;
+    max-height: auto;
     min-width: 60%;
+    border-radius: 10px;
 }
 
+.spot-item-link {
+    text-decoration: none;
+    position: relative;
+}
+
+/* Tooltip 容器 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    /* border-bottom: 1px dotted black; */
+    /* 悬停元素上显示点线 */
+}
+
+/* Tooltip 文本 */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: gray;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* 定位 */
+    position: absolute;
+    z-index: 1;
+}
+
+/* 鼠标移动上去后显示提示框 */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;  /* 提示工具头部 */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
+.spot-item-rating-value {
+    padding-left: 30%;
+}
+
+.spot-item-address-wrapper {
+    padding-top: 2%;
+    padding-left: 5%;
+    padding-right: 5%;
+    display: flex;
+    font-size: 17px;
+    color: black;
+    justify-content: space-between;
+}
+
+.spot-item-price {
+    padding-left: 5%;
+    padding-top: 5%;
+    font-size: 18px;
+    font-weight: bold;
+    color: black;
+}
+
+.spot-item-rating {
+    display: flex;
+    justify-content: space-between;
+}
+
+.spot-item-address-wrapper * {
+    text-decoration: none;
+}

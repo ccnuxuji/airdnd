@@ -16,10 +16,10 @@ function Navigation({ isLoaded }) {
                 <div className='logo-text'>airdnd</div>
             </NavLink>
 
-            {/* search bar */}
+            {/* search bar
             <div className='search-bar'>
                 <input type="text" id="search" name="search" placeholder="Search..." />
-            </div>
+            </div> */}
 
             {/* profile button */}
             

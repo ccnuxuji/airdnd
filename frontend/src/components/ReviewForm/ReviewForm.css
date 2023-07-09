@@ -9,6 +9,9 @@
 
 .star-rating {
     direction: rtl;
+    display: flex;
+    justify-content: center;
+    height: 30px;
     /* Right-to-left to display stars from right to left */
 }
 
@@ -23,6 +26,7 @@
     display: inline-block;
     cursor: pointer;
     color: #ddd;
+    align-items: center;
     /* Default star color */
 }
 
@@ -31,3 +35,10 @@
     color: #ffc107;
     /* Highlighted star color */
 }
+
+.star-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
