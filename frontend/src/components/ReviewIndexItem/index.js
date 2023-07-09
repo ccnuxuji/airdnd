@@ -1,11 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {deleteOneReview} from '../../store/reviews'
+import { deleteOneReview } from '../../store/reviews'
 import { getCurrentUser } from '../../store/session';
 import OpenModalMenuItem from '../Navigation/OpenModalMenuItem';
 import EditReviewFormModal from '../EditReviewFormModal';
 import DeleteConfirmModal from '../DeleteConfirmModal';
 import { useModal } from "../../context/Modal";
+import './ReviewIndexItem.css';
 
 
 const ReviewIndexItem = ({ review, type }) => {
@@ -13,19 +14,38 @@ const ReviewIndexItem = ({ review, type }) => {
     const { closeModal } = useModal();
     const user = useSelector(getCurrentUser);
     const dispatch = useDispatch();
+    const date = new Date(review.createdAt);
+
+    let year = date.getFullYear();
+    let month = date.getMonth();
+    const monthName =  [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
 
     const handleDelete = (e) => {
         e.preventDefault();
-        dispatch(deleteOneReview(review.id));
+        dispatch(deleteOneReview(review));
         closeModal();
-        // history.push(`/reviews/current`)
     }
 
     return (
-        <div>
-            { type !== 'spotDetail' && <h2>{review.Spot.name}</h2>}
-            { type === 'spotDetail' && <h2>Reviewed by {review.User.firstName}</h2>}
-            <div>{review.createdAt}</div>
+        <div className='review-item'>
+            {type !== 'spotDetail' && <div className='review-item-spotname'>{review.Spot.name}</div>}
+            {type === 'spotDetail' && <div className='review-item-firstname'>{review.User.firstName}</div>}
+            <div className='review-create-time'>
+                {`${monthName[month]} ${year}`}
+            </div>
             <div>{review.review}</div>
             {
                 user && user.id === review.userId &&
@@ -41,7 +61,7 @@ const ReviewIndexItem = ({ review, type }) => {
                             itemType='button'
                             itemText="Delete"
                             // onItemClick={closeMenu}
-                            modalComponent={<DeleteConfirmModal review={review} handleDelete={handleDelete} type='review'/>}
+                            modalComponent={<DeleteConfirmModal review={review} handleDelete={handleDelete} type='review' />}
                         />
                     </div>
                 )

@@ -203,7 +203,7 @@ router.delete(
 // returns all the reviews that belong to a spot specified by id
 router.get(
     '/:id/reviews',
-    requireAuth,
+    // requireAuth,
     checkResourceExist,
     async (req, res) => {
         const id = req.params.id;
@@ -225,7 +225,8 @@ router.get(
                         model: ReviewImage,
                         attributes: ['id', 'url']
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']]
             }
         );
 

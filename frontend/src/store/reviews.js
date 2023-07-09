@@ -1,4 +1,5 @@
 import { csrfFetch } from './csrf'
+import { fetchOneSpot } from './spots';
 export const LOAD_CURRENT_REVIEWS = 'reviews/LOAD_CURRENT_REVIEWS';
 export const LOAD_SPOT_REVIEWS = 'reviews/LOAD_SPOT_REVIEWS';
 export const RECEIVE_REVIEW = 'reviews/RECEIVE_REVIEW';
@@ -60,9 +61,9 @@ export const fetchReviewsBySpot = (spotId) => async (dispatch) => {
         }
     );
     const data = await response.json();
-    console.log(data)
     if (response.ok) {
-        dispatch(setSoptReviews(data.Reviews));
+        const reviews = data.Reviews;
+        dispatch(setSoptReviews(reviews));
     }
     return data;
 };
@@ -80,7 +81,8 @@ export const createOneReview = (spotId, review) => async dispatch => {
     );
     const data = await res.json();
     if (res.status === 201) {
-        dispatch(receiveReview({...review, ...data}))
+        await dispatch(fetchReviewsBySpot(spotId));
+        await dispatch(fetchOneSpot(review.spotId));
         return data;
     } else {
         throw data;
@@ -101,23 +103,25 @@ export const updateOneReview = (review) => async dispatch => {
 
     const data = await res.json();
     if (res.status === 200) {
-        dispatch(receiveReview({...review, ...data}));
+        await dispatch(fetchReviewsBySpot(review.spotId));
+        await dispatch(fetchOneSpot(review.spotId));
         return data;
     } else {
         throw data;
     }
 };
 
-export const deleteOneReview = (reviewId) => async dispatch => {
+export const deleteOneReview = (review) => async dispatch => {
     const res = await csrfFetch(
-        `/api/reviews/${reviewId}`,
+        `/api/reviews/${review.id}`,
         {
             method: 'DELETE'
         }
     );
     const data = await res.json();
     if (res.ok) {
-        dispatch(removeReview(reviewId));
+        await dispatch(fetchReviewsBySpot(review.spotId));
+        await dispatch(fetchOneSpot(review.spotId));
         return data;
     } else {
         throw data;

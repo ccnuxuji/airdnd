@@ -11,7 +11,7 @@ const CreateSpotForm = () => {
         lng: 1, 
         description: '', 
         name: '', 
-        price: 1,
+        price: '',
         SpotImages: [
             {
                 url: '',

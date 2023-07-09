@@ -25,9 +25,15 @@ const SpotIndex = () => {
 
   useEffect(() => {
     if (user) {
-       dispatch(fetchCurrentSpots());
+      try {
+        dispatch(fetchCurrentSpots());
+      } catch (e) {
+
+      }
+       
     }
   }, [dispatch, user]);
+
 
   return (
     <div>

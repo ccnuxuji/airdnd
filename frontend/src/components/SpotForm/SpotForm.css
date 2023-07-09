@@ -1,3 +1,27 @@
 .errors {
     color: red;
 }
+
+.spot-form-page-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.spot-form-page {
+    max-width: 500px;
+}
+
+.spot-form-page button {
+    width: 100%;
+    height: 40px;
+}
+
+.spot-form-page input {
+    width: 98%;
+    height: 40px;
+}
+
+.spot-form-page textarea {
+    width: 98%;
+    height: 150px;
+}
