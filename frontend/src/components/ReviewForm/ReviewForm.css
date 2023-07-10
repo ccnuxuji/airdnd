@@ -1,16 +1,30 @@
 .edit-review-modal {
-    height: 300px;
-    width: 568px;
+    height: 350px;
+    width: 468px;
 }
 
 .edit-review-header {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.review-textarea-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.review-textarea-wrapper textarea {
+    width: 90%;
+    height: 150px
 }
 
 .star-rating {
+    padding-top: 1%;
     direction: rtl;
     display: flex;
     justify-content: center;
+    align-items: center;
     height: 30px;
     /* Right-to-left to display stars from right to left */
 }
@@ -21,7 +35,7 @@
 }
 
 .star-rating label {
-    font-size: 24px;
+    font-size: 30px;
     /* Adjust the size of the stars */
     display: inline-block;
     cursor: pointer;
@@ -39,6 +53,24 @@
 .star-text {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
 }
 
+.star-text {
+    margin-left: 2%;
+    margin-top: 1.5%;
+    font-weight: bold;
+}
+
+.review-submit-button-wrapper {
+    padding-top: 5%;
+    display: flex;
+    justify-content: center;
+}
+
+.review-submit-button-wrapper button {
+    width: 90%;
+    height: 50px;
+    background-color: red;
+    color: white;
+}

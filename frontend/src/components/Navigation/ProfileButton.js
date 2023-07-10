@@ -50,7 +50,9 @@ function ProfileButton({ user }) {
         {user &&
           <Link to='/spots/new' className="create-spot-text">Create a New Spot</Link>
         }
-        <button onClick={openMenu} style={{ color: "black", fontSize: "20px" }}>
+        <button 
+          onClick={openMenu}
+          className="navigtion-button-wrapper">
           <i className="fa-solid fa-bars"></i>
           <i className="fas fa-user-circle" />
         </button>
