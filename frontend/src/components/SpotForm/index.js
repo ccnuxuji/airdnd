@@ -235,6 +235,7 @@ const SpotForm = ({ spot, formType }) => {
                             onChange={e => setPhotoUrl(e.target.value)}
                             placeholder='Preview Image URL'
                         />
+                        <div className="errors">{errors.mainImg}</div>
                         <input
                             value={photoUrl2}
                             type='text'
