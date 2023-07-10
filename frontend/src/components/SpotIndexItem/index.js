@@ -37,7 +37,7 @@ const SpotIndexItem = ({ spot, fromPath }) => {
         <div className='spot-item-address-wrapper'>
           <div className='spotItem-address'>{spot.city} , {spot.state}</div>
           <div className='spot-item-rating'>
-            <i className="fa-solid fa-star"></i>
+            <i className="fa-solid fa-star" style={{color: '#ffc107'}}></i>
             <div className='spot-item-rating-value'>{spot.avgRating === 0 ? 'New' : spot.avgRating.toFixed(1)}</div>
           </div>
         </div>
@@ -48,7 +48,7 @@ const SpotIndexItem = ({ spot, fromPath }) => {
   {
     fromPath === '/spots/current' &&
       (
-        <div>
+        <div className='spot-item-button-area'>
           <button
             onClick={handleUpdate}
           >Update</button>

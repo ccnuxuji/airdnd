@@ -69,4 +69,15 @@
 
 .create-spot-text {
     margin-right: 10px;
+    text-decoration: none;
+}
+
+.navigtion-button-wrapper {
+    /* style={{ color: "black", fontSize: "20px", borderRadius:'20px', borderColor: 'grey', width: '100px', height: '40px' }} */
+    color: black;
+    font-size: 30px;
+    border-radius: 20px;
+    border-color: grey;
+    width: 100px;
+    height: 40px;
 }

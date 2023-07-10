@@ -76,7 +76,7 @@ const SpotShow = () => {
                         <div className='spot-booking-area-price-rating'>
                             <div className='spot-booking-area-price'><span>$ {spot.price}</span> night</div>
                             <div className='spot-booking-area-rating'>
-                                <i className="fa-solid fa-star"></i>
+                                <i className="fa-solid fa-star" style={{color: '#ffc107'}}></i>
                                 {spot.avgStarRating === 0 ? 'New' : spot.avgStarRating.toFixed(1)}
                                 {spot.numReviews === 1 && ' · 1 Review'}
                                 {spot.numReviews > 1 && ` · ${spot.numReviews} Reviews`}
@@ -90,7 +90,7 @@ const SpotShow = () => {
 
                 <div className='spot-reivew-area'>
                     <div className='spot-reivew-title'>
-                        <i className="fa-solid fa-star"></i>
+                        <i className="fa-solid fa-star" style={{color: '#ffc107'}}></i>
                         {spot.avgStarRating === 0 ? 'New' : spot.avgStarRating.toFixed(1)}
                         {spot.numReviews === 1 && ' · 1 Review'}
                         {spot.numReviews > 1 && ` · ${spot.numReviews} Reviews`}
