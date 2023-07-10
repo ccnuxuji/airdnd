@@ -1,4 +1,11 @@
+.managespot-title {
+    padding-left: 4%;
+    padding-bottom: 2%;
+}
 
+.managespot-title button {
+    height: 30px;
+}
 
 .spot-index-all {
     display: grid;

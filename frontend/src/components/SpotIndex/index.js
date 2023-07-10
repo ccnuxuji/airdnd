@@ -30,7 +30,7 @@ const SpotIndex = () => {
       } catch (e) {
 
       }
-       
+
     }
   }, [dispatch, user]);
 
@@ -41,10 +41,12 @@ const SpotIndex = () => {
         path === "/spots/current" &&
         (
           <div>
-            <div>Manage your spots</div>
-            <button
-              onClick={createNewSpotHandler}
-            >Create a new spot</button>
+            <div className='managespot-title'>
+              <h1>Manage your spots</h1>
+              <button
+                onClick={createNewSpotHandler}
+              >Create a new spot</button>
+            </div>
 
             <div className='spot-index-all'>
               {currentSpots.map((spot) => (

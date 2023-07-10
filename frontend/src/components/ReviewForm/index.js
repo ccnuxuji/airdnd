@@ -54,9 +54,11 @@ function ReviewForm({ review, spotId, formType }) {
     return (
         <>
             <div className="edit-review-modal">
-                <div className="edit-review-header">How was your stay {formType === 'Update' ? `at ${review.Spot.name}` : ''}?</div>
+                <div className="edit-review-header">
+                    <h2>How was your stay {formType === 'Update' ? `at ${review.Spot.name}` : ''}?</h2>
+                </div>
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <div className='review-textarea-wrapper'>
                         <textarea
                             type="text"
                             value={reviewContent}
@@ -68,7 +70,7 @@ function ReviewForm({ review, spotId, formType }) {
                     <div className='star-rating-wrapper'>
                         <div className="star-rating">
                             <div className='star-text'>
-                                <div>stars</div>
+                                <div>Stars</div>
                             </div>
                             <input
                                 type="radio"
@@ -115,17 +117,17 @@ function ReviewForm({ review, spotId, formType }) {
                                 onChange={handleRatingChange}
                             />
                             <label htmlFor="star1">&#9733;</label>
-
                         </div>
                     </div>
 
                     {errors.credential && (
                         <p>{errors.credential}</p>
                     )}
-                    <div>
-                        <button 
-                        disabled={Object.keys(errors).length !== 0}
-                        type="submit">Submit Your Review</button>
+                    <div className='review-submit-button-wrapper'>
+                        <button
+                            disabled={Object.keys(errors).length !== 0}
+                            type="submit">Submit Your Review
+                        </button>
                     </div>
                 </form>
             </div>

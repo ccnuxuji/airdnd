@@ -103,6 +103,9 @@ const SpotForm = ({ spot, formType }) => {
         if (photoUrl.length === 0) {
             errorsObject.mainImg = "Title photo url is required";
         }
+        if (description.length < 30) {
+            errorsObject.description = "Description needs a minimum of 30 characters";
+        }
         setErrors(errorsObject);
 
     }, [country, address, city, state, lat, lng, description, name, price]);
@@ -194,6 +197,7 @@ const SpotForm = ({ spot, formType }) => {
                             placeholder='Please write at least 30 characters'
                             onChange={(e) => setDescription(e.target.value)}
                         />
+                        <div className="errors">{errors.description}</div>
                     </div>
 
                     <div className=''>
