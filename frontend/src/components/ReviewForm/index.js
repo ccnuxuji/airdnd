@@ -30,7 +30,6 @@ function ReviewForm({ review, spotId, formType }) {
                 // the other case is "Update"
                 await dispatch(updateOneReview(review));
             }
-            console.log(spotId)
             closeModal();
 
         } catch (error) {

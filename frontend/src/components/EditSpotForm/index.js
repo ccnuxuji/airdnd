@@ -13,7 +13,6 @@ const EditSpotForm = () => {
       spot.SpotImages.push({url: '', preview: false})
     } 
   }
-  console.log(spot)
  
   useEffect(() => {
     dispatch(fetchOneSpot(spotId))
