@@ -11,28 +11,30 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 /* Media queries to adjust the number of columns */
-@media (min-width: 800px) {
+@media (min-width: 900px) {
     .spot-index-all {
         grid-template-columns: 1fr 1fr;
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
     .spot-index-all {
         grid-template-columns: 1fr 1fr 1fr;
     }
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1800px) {
     .spot-index-all {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 }
 
-@media (min-width: 2000px) {
+@media (min-width: 2200px) {
     .spot-index-all {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     }

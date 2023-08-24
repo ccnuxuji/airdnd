@@ -6,13 +6,15 @@ const {
     checkResourceExist,
     checkReviewDuplicate,
     currentUserCannotBookHisSpots,
-    hasOverlapBookings} = require('../../utils/errors')
+    hasOverlapBookings } = require('../../utils/errors')
 const {
     validateSpotsQuery,
     validateSpot,
     validateBooking,
     validateReview,
-    validateSpotImage} = require('../../utils/validation');
+    validateSpotImage } = require('../../utils/validation');
+const { singleFileUpload, singleMulterUpload } = require("../../awsS3");
+
 
 const router = express.Router();
 
@@ -155,14 +157,16 @@ router.post(
     requireAuth,
     checkResourceExist,
     requireAuthorization,
-    validateSpotImage,
+    singleMulterUpload("image"),
+    // validateSpotImage,
     async (req, res) => {
         const spotId = req.params.id;
-        const images = req.body;
-        const { url, preview } = req.body;
-        const spotImage = await SpotImage.create({ spotId, url, preview });
-        const { id } = spotImage;
-        res.json({ id, url, preview });
+        const profileImageUrl = req.file ?
+            await singleFileUpload({ file: req.file, public: true }) :
+            null;
+        const { preview } = req.body;
+        const spotImage = await SpotImage.create({ spotId, url:profileImageUrl, preview });
+        res.json(spotImage);
     }
 );
 
