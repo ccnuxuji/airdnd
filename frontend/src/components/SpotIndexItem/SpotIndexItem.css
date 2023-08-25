@@ -2,29 +2,27 @@
     display: flex;
     flex-direction: column;
     place-self: center;
-    min-width: 340px;
-    max-width: 400px;
-    min-height: 360px;
-    max-height: 400px;
+    width: 370px;
+    height: 400px;
     padding-left: 1%;
     padding-right: 1%;
     border-radius: 10px;
 }
 
 .spot-index-item img {
-    max-width: 100%;
-    min-width: 90%;
-    max-height: auto;
-    min-height: 90%;
+    width: 100%;
+    height: 100%;
     border-radius: 10px;
 }
 
 .spotItem-img {
     width: 100%;
-    /* height: 60% */
+    height: 70%
 }
 
 .spot-item-link {
+    width: 100%;
+    height: 100%;
     text-decoration: none;
     position: relative;
 }

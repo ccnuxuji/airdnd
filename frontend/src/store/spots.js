@@ -163,7 +163,6 @@ export const deleteOneSpot = (spotId) => async dispatch => {
             method: 'DELETE'
         }
     );
-    console.log(res.ok);
     if (res.ok) {
         dispatch(removeSpot(spotId));
     }
