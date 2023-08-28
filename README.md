@@ -13,16 +13,18 @@ Airdnd is a web application inspired by Airbnb, the renowned online marketplace 
 ## Feature Lists
 
 1. Sign up, log in, and demo user 
-![signup-login]()
+![signup-login](./images/login.png)
 
-2. View spot details, buy create spot
-![stock-buy-sell]()
+2. View spot details
+![stock-buy-sell](./images/spot_detail.png)
 
-3. Rate and comment on a spot
-![add-to-watchlist]()
+3. Create a spot
+![search-stock](./images/create_spot.png)
 
-4. Search a spot
-![search-stock]()
+4. Rate and comment on a spot
+![add-to-watchlist](./images/create_comment.png)
+
+
 
 ## Getting started
 1. Clone this repository:

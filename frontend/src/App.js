@@ -8,6 +8,7 @@ import CreateSpotForm from "./components/CreateSpotForm";
 import SpotShow from "./components/SpotShow";
 import EditSpotForm from "./components/EditSpotForm";
 import ReviewIndex from "./components/ReviewIndex";
+import Footer from "./components/Footer";
 
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ function App() {
         <Route exact path="/spots/:spotId/edit" component={EditSpotForm} />
         <Route exact path="/reviews/current" component={ReviewIndex} />
       </Switch>
+      <Footer />
     </>
   );
 }
